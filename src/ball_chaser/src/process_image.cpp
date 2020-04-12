@@ -18,8 +18,9 @@ void drive_robot(float lin_x, float ang_z)
 void process_image_callback(const sensor_msgs::Image img)
 {
     // init local temp variables
-    int white_pixel = 255;
+    int white_pixel = 255*3;
     int pix_sum = 0;
+    int num_white_row = 0;
     int num_white = 0;
     int pix_x = 0;
     int pix_len = 0;
@@ -42,36 +43,52 @@ void process_image_callback(const sensor_msgs::Image img)
             if (pix_sum == white_pixel){
                 pix_x = i;
                 num_white++;
+                num_white_row++;
             }
             pix_sum = 0;
         }
         
-        if (num_white > pix_len){
-            pix_len = num_white;
+        if (num_white_row > pix_len){
+            pix_len = num_white_row;
         }
-        num_white = 0;
+        num_white_row = 0;
     }
 
+    cov = ((float)(100*num_white))/((float)(h*w));
     pix_x = pix_x - (pix_len/2);
 
-    if (pix_x <= (w/3)){
-        z = 0.5;
-        x = 0.5;
-	ROS_INFO_STREAM("Left");
-    }
-    else if (((w/3) < pix_x) && (pix_x <= (2*w/3))){
-        z = 0.0;
-        x = 0.5;
-	ROS_INFO_STREAM("Straight");
-    }
-    else if (pix_x > (2*w/3)){
-        z = -0.5;
-        x = 0.5;
-	ROS_INFO_STREAM("Right");
+    ROS_INFO_STREAM(cov);
+    ROS_INFO_STREAM(num_white);
+    ROS_INFO_STREAM(pix_x);
+
+    if (cov > 0.01){
+        if (pix_x <= (w/3)){
+            z = 1;
+            x = 0.1/cov;
+	    ROS_INFO_STREAM("Left");
+        }
+        else if (((w/3) < pix_x) && (pix_x <= (2.0*w/3.0))){
+            z = 0.0;
+            x = 0.1/cov;
+	    ROS_INFO_STREAM("Straight");
+        }
+        else if (pix_x > (2*w/3.0)){
+            z = -1;
+            x = 0.1/cov;
+	    ROS_INFO_STREAM("Right");
+        }
+        else{
+            z = 0.0;
+            x = 0.0;
+        }
     }
     else{
         z = 0.0;
         x = 0.0;
+    }
+
+    if (x > 0.4){
+        x = 0.4;
     }
     
     drive_robot(x, z);
