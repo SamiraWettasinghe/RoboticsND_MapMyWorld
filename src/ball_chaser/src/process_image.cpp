@@ -36,10 +36,12 @@ void process_image_callback(const sensor_msgs::Image img)
 
     for (int j = 0; j < h; j++){
         for (int i = 0; i < w; i++){
-            for (int k = 0; k < 3; k++){
+            for (int k = 0; k < 3; k++){ // look at rgb values
                 pix_sum += img.data[3*i + j*step + k];
             }
 
+            /* store last white pixel detected in image 
+            left to right, top to bottom */
             if (pix_sum == white_pixel){
                 pix_x = i;
                 num_white++;
@@ -47,21 +49,24 @@ void process_image_callback(const sensor_msgs::Image img)
             }
             pix_sum = 0;
         }
-        
+
+        // store size of largest row of white pixels
         if (num_white_row > pix_len){
             pix_len = num_white_row;
         }
         num_white_row = 0;
     }
 
+    // ratio of white pixels to others
     cov = ((float)(100*num_white))/((float)(h*w));
+
+    /* readjust x pos of white ball to centre pos of white ball
+    this is only an approximation, does not take ball curvature
+    into account */
     pix_x = pix_x - (pix_len/2);
 
-    ROS_INFO_STREAM(cov);
-    ROS_INFO_STREAM(num_white);
-    ROS_INFO_STREAM(pix_x);
-
-    if (cov > 0.01){
+    // magic tuned paramters here
+    if (cov > 0.01){ // for robustness
         if (pix_x <= (w/3)){
             z = 1;
             x = 0.1/cov;
@@ -87,28 +92,12 @@ void process_image_callback(const sensor_msgs::Image img)
         x = 0.0;
     }
 
+    // set limit on max linear speed
     if (x > 0.4){
         x = 0.4;
     }
     
     drive_robot(x, z);
-
-    /* 
-       later:
-       determine the projection of the white circle on the x and y axis.
-       this will give a very accurate prediction of the centre location
-       of the sphere.
-       
-       linear velocity will be scaled by how far away ball if from centre,
-       far away from centre = slow vel.
-       angular velociy will be scaled by white pixel ratio,
-       small ratio = slow vel.
-       
-       if x and y projections are not equal in size, that means ball
-       is partially off camera.
-       if this is the case, rotate camera slowly with zero linear vel
-       to get full image of ball in view.
-    */
 }
 
 int main(int argc, char** argv)
