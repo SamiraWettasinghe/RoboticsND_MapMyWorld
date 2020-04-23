@@ -1,4 +1,4 @@
-prefix=/home/workspace/catkin_ws/install
+prefix=/home/workspace/catkin_ws/RoboticsND_WhereAmI/install
 
 Name: my_robot
 Description: Description of my_robot
