@@ -10,9 +10,16 @@
     <param name="odom_model_type" value="diff-corrected"/>
     <param name="base_frame_id" value="robot_footprint"/>
     <param name="global_frame_id" value="map"/>
+    <param name="min_particles" value="500"/>
+    <param name="max_particles" value="7000"/>
+    <param name="kld_err" value="0.001"/>
+    <param name="update_min_a" value="0.09"/>
+    <param name="update_min_d" value="0.05"/>
+    <param name="transform_tolerance" value="0.06"/>
     <param name="initial_pose_x" value="-0.020"/>
     <param name="initial_pose_y" value="29.513"/>
     <param name="initial_pose_a" value="-1.569"/>
+    <param name="laser_z_max" value="0.5"/>
   </node>
 
   <!--Move Base-->
