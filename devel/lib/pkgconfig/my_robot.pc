@@ -1,4 +1,4 @@
-prefix=/home/workspace/catkin_ws/RoboticsND_WhereAmI/devel
+prefix=/home/workspace/RoboticsND_MapMyWorld/devel
 
 Name: my_robot
 Description: Description of my_robot

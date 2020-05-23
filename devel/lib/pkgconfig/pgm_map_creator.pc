@@ -1,4 +1,4 @@
-prefix=/home/workspace/catkin_ws/RoboticsND_WhereAmI/devel
+prefix=/home/workspace/RoboticsND_MapMyWorld/devel
 
 Name: pgm_map_creator
 Description: Description of pgm_map_creator

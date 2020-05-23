@@ -1,2 +1,2 @@
 - setup-file:
-    local-name: /home/workspace/catkin_ws/RoboticsND_WhereAmI/devel/setup.sh
+    local-name: /home/workspace/RoboticsND_MapMyWorld/devel/setup.sh
