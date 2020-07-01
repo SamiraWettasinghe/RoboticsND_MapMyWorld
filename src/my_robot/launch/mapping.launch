@@ -53,6 +53,9 @@
 
       <!-- Set to false to avoid saving data when robot is not moving -->
       <param name="Mem/NotLinkedNodesKept" type="string" value="false"/>
+
+      <!-- Optimize Max Error -->
+      <param name="RGBD/OptimizeMaxError" type="string" value="1.0"/>
     </node>
   </group>
 </launch>
